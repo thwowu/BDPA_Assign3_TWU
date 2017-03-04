@@ -53,7 +53,7 @@ The further transformation from this bone code, is to equip with the capability 
 
 So we are going to define a custom class that is going to hold the two words together.
 
-# (This may be the most platform independent comment)
+[](Comment text goes here)
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/A.png)
 
 
