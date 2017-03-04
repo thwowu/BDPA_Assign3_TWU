@@ -21,7 +21,8 @@
 # Problem 1 : Set-similarity joins (A)
 Perform all pair-wise comparisons between documents, using the following technique: Each document is handled by a single mapper (remember that lines are used to represent documents in this assignment). The map method should emit, for each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value. In the reduce phase, perform the Jaccard computations for all/some selected pairs. Output only similar pairs on HDFS, in TextOutputFormat. Make sure that the same pair of documents is compared no more than once. Report the execution time and the number of performed comparisons.
 
-Assignment Requirement Analysis
+
+### Assignment Requirement Analysis
 * Each document is handled by a single mapper
 * For each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value
 * Same pair of documents is compared no more than once.
@@ -53,10 +54,15 @@ The further transformation from this bone code, is to equip with the capability 
 So we are going to define a custom class that is going to hold the two words together.
 
 
+![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/A.png)
+
+
 # Problem 2 : Set-similarity joins (B)
 Create an inverted index, only for the first $|d| - [t |d|] + 1$ words of each document d (remember that they are stored in ascending order of frequency). In your reducer, compute the similarity of the document pairs. Output only similar pairs on HDFS, in TextOutputFormat. Report the execution time and the number of performed
 comparisons.
     
+![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/B.png)
+
 
 # Problem 3 : Set-similarity joins (C)
 Explain and justify the difference between a) and b) in the number of performed comparisons, as well as their difference in execution time.
