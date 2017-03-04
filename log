@@ -1,0 +1,235 @@
+[cloudera@quickstart ~]$ hadoop fs -ls input
+Found 4 items
+-rw-r--r--   1 cloudera cloudera    5589886 2017-02-03 04:51 input/pg100.txt
+-rw-r--r--   1 cloudera cloudera    4454050 2017-02-03 04:59 input/pg31100.txt
+-rw-r--r--   1 cloudera cloudera   16013935 2017-02-03 04:59 input/pg3200.txt
+-rw-r--r--   1 cloudera cloudera      14781 2017-03-04 10:27 input/rawinput.csv
+[cloudera@quickstart ~]$ hadoop fs -rm /input/pg100.txt
+rm: `/input/pg100.txt': No such file or directory
+[cloudera@quickstart ~]$ hadoop fs -rm input/pg100.txt
+Deleted input/pg100.txt
+[cloudera@quickstart ~]$ hadoop fs -ls input
+Found 3 items
+-rw-r--r--   1 cloudera cloudera    4454050 2017-02-03 04:59 input/pg31100.txt
+-rw-r--r--   1 cloudera cloudera   16013935 2017-02-03 04:59 input/pg3200.txt
+-rw-r--r--   1 cloudera cloudera      14781 2017-03-04 10:27 input/rawinput.csv
+[cloudera@quickstart ~]$ hadoop fs -rm input/pg31100.txt
+Deleted input/pg31100.txt
+[cloudera@quickstart ~]$ hadoop fs -rm input/pg3200.txt
+Deleted input/pg3200.txt
+[cloudera@quickstart ~]$ hadoop fs -ls input
+Found 1 items
+-rw-r--r--   1 cloudera cloudera      14781 2017-03-04 10:27 input/rawinput.csv
+[cloudera@quickstart ~]$ hadoop jar MDP02A.jar mdp022.MDP022 input output
+[input, output]
+[input, output]
+17/03/04 10:43:47 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+17/03/04 10:43:53 INFO input.FileInputFormat: Total input paths to process : 1
+17/03/04 10:43:54 INFO mapreduce.JobSubmitter: number of splits:1
+17/03/04 10:43:56 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1488614808658_0002
+17/03/04 10:43:59 INFO impl.YarnClientImpl: Submitted application application_1488614808658_0002
+17/03/04 10:43:59 INFO mapreduce.Job: The url to track the job: http://quickstart.cloudera:8088/proxy/application_1488614808658_0002/
+17/03/04 10:43:59 INFO mapreduce.Job: Running job: job_1488614808658_0002
+17/03/04 10:46:19 INFO mapreduce.Job: Job job_1488614808658_0002 running in uber mode : false
+17/03/04 10:46:19 INFO mapreduce.Job:  map 0% reduce 0%
+17/03/04 10:46:46 INFO mapreduce.Job:  map 66% reduce 0%
+17/03/04 10:46:49 INFO mapreduce.Job:  map 67% reduce 0%
+17/03/04 10:46:53 INFO mapreduce.Job:  map 100% reduce 0%
+17/03/04 10:47:20 INFO mapreduce.Job:  map 100% reduce 67%
+17/03/04 10:47:23 INFO mapreduce.Job:  map 100% reduce 68%
+17/03/04 10:47:29 INFO mapreduce.Job:  map 100% reduce 69%
+17/03/04 10:47:32 INFO mapreduce.Job:  map 100% reduce 70%
+17/03/04 10:47:35 INFO mapreduce.Job:  map 100% reduce 71%
+17/03/04 10:47:38 INFO mapreduce.Job:  map 100% reduce 72%
+17/03/04 10:47:42 INFO mapreduce.Job:  map 100% reduce 74%
+17/03/04 10:47:45 INFO mapreduce.Job:  map 100% reduce 75%
+17/03/04 10:47:48 INFO mapreduce.Job:  map 100% reduce 76%
+17/03/04 10:47:51 INFO mapreduce.Job:  map 100% reduce 77%
+17/03/04 10:47:54 INFO mapreduce.Job:  map 100% reduce 79%
+17/03/04 10:47:57 INFO mapreduce.Job:  map 100% reduce 80%
+17/03/04 10:48:00 INFO mapreduce.Job:  map 100% reduce 81%
+17/03/04 10:48:03 INFO mapreduce.Job:  map 100% reduce 82%
+17/03/04 10:48:06 INFO mapreduce.Job:  map 100% reduce 84%
+17/03/04 10:48:09 INFO mapreduce.Job:  map 100% reduce 85%
+17/03/04 10:48:13 INFO mapreduce.Job:  map 100% reduce 86%
+17/03/04 10:48:16 INFO mapreduce.Job:  map 100% reduce 87%
+17/03/04 10:48:19 INFO mapreduce.Job:  map 100% reduce 88%
+17/03/04 10:48:22 INFO mapreduce.Job:  map 100% reduce 90%
+17/03/04 10:48:25 INFO mapreduce.Job:  map 100% reduce 91%
+17/03/04 10:48:28 INFO mapreduce.Job:  map 100% reduce 92%
+17/03/04 10:48:31 INFO mapreduce.Job:  map 100% reduce 93%
+17/03/04 10:48:34 INFO mapreduce.Job:  map 100% reduce 94%
+17/03/04 10:48:38 INFO mapreduce.Job:  map 100% reduce 96%
+17/03/04 10:48:41 INFO mapreduce.Job:  map 100% reduce 97%
+17/03/04 10:48:44 INFO mapreduce.Job:  map 100% reduce 99%
+17/03/04 10:48:47 INFO mapreduce.Job:  map 100% reduce 100%
+17/03/04 10:48:50 INFO mapreduce.Job: Job job_1488614808658_0002 completed successfully
+17/03/04 10:48:50 INFO mapreduce.Job: Counters: 50
+	File System Counters
+		FILE: Number of bytes read=7771798
+		FILE: Number of bytes written=15778439
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=14910
+		HDFS: Number of bytes written=2040281
+		HDFS: Number of read operations=6
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=1
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=31193
+		Total time spent by all reduces in occupied slots (ms)=111870
+		Total time spent by all map tasks (ms)=31193
+		Total time spent by all reduce tasks (ms)=111870
+		Total vcore-seconds taken by all map tasks=31193
+		Total vcore-seconds taken by all reduce tasks=111870
+		Total megabyte-seconds taken by all map tasks=31941632
+		Total megabyte-seconds taken by all reduce tasks=114554880
+	Map-Reduce Framework
+		Map input records=432
+		Map output records=186192
+		Map output bytes=7399408
+		Map output materialized bytes=7771798
+		Input split bytes=129
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=93096
+		Reduce shuffle bytes=7771798
+		Reduce input records=186192
+		Reduce output records=93096
+		Spilled Records=372384
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=1906
+		CPU time spent (ms)=26500
+		Physical memory (bytes) snapshot=353898496
+		Virtual memory (bytes) snapshot=3007340544
+		Total committed heap usage (bytes)=226365440
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	mdp022.MDP022$UNIQUE
+		counter=93096
+	File Input Format Counters 
+		Bytes Read=14781
+	File Output Format Counters 
+		Bytes Written=2040281
+Numbers of output number is: 93096
+[cloudera@quickstart ~]$ hadoop jar MDP02B.jar mdp02.b.MDP022B input output
+Exception in thread "main" java.lang.ClassNotFoundException: mdp02.b.MDP022B
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:366)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+	at java.lang.Class.forName0(Native Method)
+	at java.lang.Class.forName(Class.java:270)
+	at org.apache.hadoop.util.RunJar.run(RunJar.java:214)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:136)
+[cloudera@quickstart ~]$ hadoop jar MDP02B.jar mdp022.b.MDP022B input output
+[input, output]
+[input, output]
+17/03/04 10:51:45 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+17/03/04 10:51:49 INFO input.FileInputFormat: Total input paths to process : 1
+17/03/04 10:51:50 INFO mapreduce.JobSubmitter: number of splits:1
+17/03/04 10:51:51 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1488614808658_0003
+17/03/04 10:51:53 INFO impl.YarnClientImpl: Submitted application application_1488614808658_0003
+17/03/04 10:51:53 INFO mapreduce.Job: The url to track the job: http://quickstart.cloudera:8088/proxy/application_1488614808658_0003/
+17/03/04 10:51:53 INFO mapreduce.Job: Running job: job_1488614808658_0003
+17/03/04 10:52:21 INFO mapreduce.Job: Job job_1488614808658_0003 running in uber mode : false
+17/03/04 10:52:21 INFO mapreduce.Job:  map 0% reduce 0%
+17/03/04 10:52:59 INFO mapreduce.Job:  map 16% reduce 0%
+17/03/04 10:53:02 INFO mapreduce.Job:  map 67% reduce 0%
+17/03/04 10:53:10 INFO mapreduce.Job:  map 100% reduce 0%
+17/03/04 10:53:54 INFO mapreduce.Job:  map 100% reduce 67%
+17/03/04 10:53:57 INFO mapreduce.Job:  map 100% reduce 68%
+17/03/04 10:54:00 INFO mapreduce.Job:  map 100% reduce 69%
+17/03/04 10:54:03 INFO mapreduce.Job:  map 100% reduce 70%
+17/03/04 10:54:06 INFO mapreduce.Job:  map 100% reduce 72%
+17/03/04 10:54:09 INFO mapreduce.Job:  map 100% reduce 74%
+17/03/04 10:54:12 INFO mapreduce.Job:  map 100% reduce 76%
+17/03/04 10:54:15 INFO mapreduce.Job:  map 100% reduce 77%
+17/03/04 10:54:18 INFO mapreduce.Job:  map 100% reduce 79%
+17/03/04 10:54:22 INFO mapreduce.Job:  map 100% reduce 80%
+17/03/04 10:54:25 INFO mapreduce.Job:  map 100% reduce 82%
+17/03/04 10:54:28 INFO mapreduce.Job:  map 100% reduce 83%
+17/03/04 10:54:31 INFO mapreduce.Job:  map 100% reduce 85%
+17/03/04 10:54:34 INFO mapreduce.Job:  map 100% reduce 87%
+17/03/04 10:54:37 INFO mapreduce.Job:  map 100% reduce 89%
+17/03/04 10:54:40 INFO mapreduce.Job:  map 100% reduce 90%
+17/03/04 10:54:43 INFO mapreduce.Job:  map 100% reduce 93%
+17/03/04 10:54:46 INFO mapreduce.Job:  map 100% reduce 94%
+17/03/04 10:54:49 INFO mapreduce.Job:  map 100% reduce 96%
+17/03/04 10:54:52 INFO mapreduce.Job:  map 100% reduce 97%
+17/03/04 10:54:56 INFO mapreduce.Job:  map 100% reduce 99%
+17/03/04 10:54:57 INFO mapreduce.Job:  map 100% reduce 100%
+17/03/04 10:54:58 INFO mapreduce.Job: Job job_1488614808658_0003 completed successfully
+17/03/04 10:54:59 INFO mapreduce.Job: Counters: 50
+	File System Counters
+		FILE: Number of bytes read=7771798
+		FILE: Number of bytes written=15778457
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=14910
+		HDFS: Number of bytes written=1231482
+		HDFS: Number of read operations=6
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=1
+		Launched reduce tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=44976
+		Total time spent by all reduces in occupied slots (ms)=103959
+		Total time spent by all map tasks (ms)=44976
+		Total time spent by all reduce tasks (ms)=103959
+		Total vcore-seconds taken by all map tasks=44976
+		Total vcore-seconds taken by all reduce tasks=103959
+		Total megabyte-seconds taken by all map tasks=46055424
+		Total megabyte-seconds taken by all reduce tasks=106454016
+	Map-Reduce Framework
+		Map input records=432
+		Map output records=186192
+		Map output bytes=7399408
+		Map output materialized bytes=7771798
+		Input split bytes=129
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=93096
+		Reduce shuffle bytes=7771798
+		Reduce input records=186192
+		Reduce output records=72157
+		Spilled Records=372384
+		Shuffled Maps =1
+		Failed Shuffles=0
+		Merged Map outputs=1
+		GC time elapsed (ms)=2825
+		CPU time spent (ms)=27280
+		Physical memory (bytes) snapshot=338059264
+		Virtual memory (bytes) snapshot=3007860736
+		Total committed heap usage (bytes)=226365440
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	mdp022.b.MDP022B$UNIQUE
+		counter=93096
+	File Input Format Counters 
+		Bytes Read=14781
+	File Output Format Counters 
+		Bytes Written=1231482
+Numbers of output number is: 93096
+[cloudera@quickstart ~]$ 
