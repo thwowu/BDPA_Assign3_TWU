@@ -21,6 +21,14 @@
 # Problem 1 : Set-similarity joins (A)
 Perform all pair-wise comparisons between documents, using the following technique: Each document is handled by a single mapper (remember that lines are used to represent documents in this assignment). The map method should emit, for each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value. In the reduce phase, perform the Jaccard computations for all/some selected pairs. Output only similar pairs on HDFS, in TextOutputFormat. Make sure that the same pair of documents is compared no more than once. Report the execution time and the number of performed comparisons.
 
+Assignment Requirement Analysis
+* Each document is handled by a single mapper
+* For each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value
+* Same pair of documents is compared no more than once.
+* Jaccard computations in Reducer
+* Output only similar pairs on HDFS, in TextOutputFormat.
+* Report the execution time and the number of performed comparisons
+
 *** 
 
 According to the assignment instruction, the first point is to compare a pair of documents, which can be string. The second point is to have a method to create index number for each line, which can be regarded as a document in this case. As a result, in this exercise, firstly it is required to have a file that should have a index value to be the document ID, and its context after the document ID. Each document ID is served to present a line and do the configuration to read key and values, separated by commas (because the file is stored in .csv format ) from the input files
