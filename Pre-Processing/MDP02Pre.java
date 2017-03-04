@@ -114,7 +114,7 @@ public class MDP02Pre extends Configured implements Tool {
 	    	 
 	    	 HashMap<String, String> Stop = new HashMap<String, String>();
 	    	 rdr = new BufferedReader(new FileReader(
-								new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
+								new File("/home/cloudera/workspace/WordCount/output/WordCount.csv")));
 	    	 
 	    	 String pattern;
 				while ((pattern = rdr.readLine()) != null) {
