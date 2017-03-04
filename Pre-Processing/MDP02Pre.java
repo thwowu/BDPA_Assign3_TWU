@@ -78,12 +78,25 @@ public class MDP02Pre extends Configured implements Tool {
 	      Counter c1 = counters.findCounter(UNIQUE.counter);
 	      
 	      System.out.println("Numbers of output number is: " + c1.getValue());
-	      
+	      	      
+	      // http://www.codejava.net/java-se/file-io/how-to-read-and-write-text-file-in-java 
+	      /*
+	       * 
+	        FileWriter writer = new FileWriter("MyFile.txt", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+ 
+            bufferedWriter.write("Hello World");
+            bufferedWriter.newLine();
+            bufferedWriter.write("See You Again!");
+	       * 
+	       */
+	     
 	      FileWriter writer = new FileWriter("MyFile.txt", true);
-          BufferedWriter bufferedWriter = new BufferedWriter(writer);
-          bufferedWriter.write( String.valueOf( c1.getValue()) );	
-          bufferedWriter.close();
-	      
+              BufferedWriter bufferedWriter = new BufferedWriter(writer);
+              bufferedWriter.write( String.valueOf( c1.getValue()) );	
+              bufferedWriter.close();
+		
+		
           return 0;
 	}
 	
