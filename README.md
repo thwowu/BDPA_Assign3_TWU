@@ -13,21 +13,16 @@
 * Order the tokens of each line in ascending order of global frequency.
 
 
-Learned from the last assignment, we have had the StopWords, 
+Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
 
 ```
-HashMap<String, String> Stop = new HashMap<String, String>();
-	    	 rdr = new BufferedReader(new FileReader(
-								new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
-	    	 
+HashSet<String> stopWords = new HashSet<String>();
+	    	 rdr = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
 	    	 String pattern;
 				while ((pattern = rdr.readLine()) != null) {
 					String[] word = pattern.split(",");
-					Stop.put(word[0], word[1]);
-				} 
+					stopWords.put(word[0]);} 
 	    	// http://stackoverflow.com/questions/1625814/get-a-hashset-out-of-the-keys-of-a-hashmap
-			HashSet<String> stopWords = new HashSet<String>(Stop.keySet());
-
 
 	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
 	        	 token = token.trim().toLowerCase();
@@ -35,14 +30,18 @@ HashMap<String, String> Stop = new HashMap<String, String>();
 		    	 Matcher m = p.matcher(token.toLowerCase());
 		    	 
 	        	 if (token.toLowerCase().isEmpty() 
-	        			 || stopWords.contains(token.toLowerCase() ))  {
-	    	                 continue;
-	    	             } 
-	        			 
-	        	 if (!m.find() 
-	        			 || value.toString().length() == 0  ) {
+	        	     || stopWords.contains(token.toLowerCase() ))  {
+	    	             continue;
+	    	             } 		 
+	        	 if (!m.find() || value.toString().length() == 0  ) {
 	                 continue;
-	             } 
+	             	     } 
+```
+
+After previous steps, I write remaining non-stopwords words as output value, and key becomes the numbers of counted characters starting from the first characters, which will be served as the document ID keys for this assignment, since it fits the requirement of uniqueness (it will keep increasing, instead of meeting the duplicate situation). 
+
+```
+context.write(key, new Text(token.toLowerCase()));
 ```
 
 
