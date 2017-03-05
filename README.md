@@ -110,7 +110,8 @@ String pattern;
 		wordcount.put(word[0], word[1]);}
 ```
 
-Then perform routing the global frequency into the similar format as last assignment (document_file_name#frequency -> word#frequency): 
+Then perform routing the global frequency into the similar format as last assignment (document_file_name#frequency -> word#frequency). Keeping the # can help the later work when the hashtag # works as a seperator that I can split them into two groups. 
+
 ```
 for (Text num : values) {title.add(num.toString());}
 
@@ -124,9 +125,75 @@ for (String numi : ti) {
 	    }
 }
 ```
-Finally, after considering several methods to solve the problem including sort(), or Arrays.sort(), the youtube video
+So far at this step, I have the stream of value as 
+```
+golden#3, silver#10, red#30, blue#200, kitkat#2
+```
 
+
+Finally, after considering several methods to solve the problem including sort(), or Arrays.sort(), the youtube video introduces how to sort Lists - ArrayLists and LinkedLists - in terms of Comparators, and how to make use of the Collection interface which is very useful in this assignment since the sorted is done per line. 
 [![IMAGE ALT TEXT HERE](https://i.imgur.com/zR2KWD7l.png)](https://www.youtube.com/watch?v=QYvUmIYgsiA)
+
+```
+List<Integer> numbers = new ArrayList<Integer>();
+numbers.add(3);
+numbers.add(36);
+numbers.add(1);
+Collections.sort(numbers, new Comparator<Integer>() {
+public int compare(Integer num1, Integer num2) {
+	return num1.compareTo(num2);
+```
+Here I need to firstly split them by commas so they will be broken into chunks as List elements to iterate. Then I re-use the pattern to group two pattern seperately: "non-integer characters and #" & "integer", because I would like to compare the sequence and sort them according to its value. 
+
+Then I have to put back the chunks back together by Stringbulder. Consdering that there's no further need to splitting, for later use in question A and question B, here I try to eliminate the hashtag and let the different words seperated only by space. 
+```
+golden silver red blue kitkat
+```
+and, the code works like that:
+
+```
+List<String> rangingData = Arrays.asList(stringBuilder.toString().split("\\s*,\\s*")); 
+Collections.sort(rangingData, new Comparator<String>() {
+	public int compare(String o1, String o2) {
+		return removeInt(o1) - removeInt(o2);}
+
+	int removeInt(String s) {
+		String work = s.trim();
+		Pattern p = Pattern.compile("(\\w+#)(\\d+)");
+		Matcher m = p.matcher(work);
+		String wor = new String();
+		while (m.find()){
+			wor = m.group(2);}
+		if (wor.isEmpty()){
+			return 0;}
+	    	int wo = Integer.parseInt(wor);
+		// http://stackoverflow.com/questions/5585779/converting-string-to-int-in-java
+		return wo;} } );
+		
+StringBuilder newsortedbyFreq = new StringBuilder();
+	         
+	for (String numi : rangingData) { 
+		if (numi.length() > 0);{
+		if (newsortedbyFreq.length() > 0) newsortedbyFreq.append(" ");{	        		
+		   newsortedbyFreq.append(numi.replaceAll("#\\d+", ""));
+		         } } }
+	         
+	         /* Book - MapReduce Design Patterns p.160
+	          * If it is empty or null, increment the NULL_OR_EMPTY_COUNTER counter by 1
+	          * context.getCounter(STATE_COUNTER_GROUP, NULL_OR_EMPTY_COUNTER).increment(1);
+	          */
+	context.getCounter(UNIQUE.counter).increment(1);
+	         
+	context.write(key, new Text(newsortedbyFreq.toString()
+	       .replaceAll("#\\d+", "").replaceAll(",", "").replaceAll("__#null", "")));
+```
+
+
+
+
+
+
+
 
 
 # Problem 1 : Set-similarity joins (A)
