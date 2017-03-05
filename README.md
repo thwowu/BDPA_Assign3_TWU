@@ -2,10 +2,6 @@
 
 
 
-```
-
-
-```
 
 
 
@@ -15,6 +11,39 @@
 * Remove all StopWords (you can use the StopWords file of your previous assignment), special characters (keep only [a-z],[A-Z] and [0-9]) and keep each unique word only once per line. Don’t keep empty lines
 * Store on HDFS the number of output records (i.e., total lines)} 
 * Order the tokens of each line in ascending order of global frequency.
+
+
+Learned from the last assignment, we have had the StopWords, 
+
+```
+HashMap<String, String> Stop = new HashMap<String, String>();
+	    	 rdr = new BufferedReader(new FileReader(
+								new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
+	    	 
+	    	 String pattern;
+				while ((pattern = rdr.readLine()) != null) {
+					String[] word = pattern.split(",");
+					Stop.put(word[0], word[1]);
+				} 
+	    	// http://stackoverflow.com/questions/1625814/get-a-hashset-out-of-the-keys-of-a-hashmap
+			HashSet<String> stopWords = new HashSet<String>(Stop.keySet());
+
+
+	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
+	        	 token = token.trim().toLowerCase();
+	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9_]");
+		    	 Matcher m = p.matcher(token.toLowerCase());
+		    	 
+	        	 if (token.toLowerCase().isEmpty() 
+	        			 || stopWords.contains(token.toLowerCase() ))  {
+	    	                 continue;
+	    	             } 
+	        			 
+	        	 if (!m.find() 
+	        			 || value.toString().length() == 0  ) {
+	                 continue;
+	             } 
+```
 
 
 
