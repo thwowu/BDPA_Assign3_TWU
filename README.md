@@ -16,25 +16,22 @@ Learned from the last assignment, we have had the StopWords. For this assignment
 
 ```
 HashSet<String> stopWords = new HashSet<String>();
-	    	 rdr = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
-	    	 String pattern;
-				while ((pattern = rdr.readLine()) != null) {
-					String[] word = pattern.split(",");
-					stopWords.put(word[0]);} 
+rdr = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
+String pattern;
+while ((pattern = rdr.readLine()) != null) {
+	String[] word = pattern.split(",");
+	stopWords.put(word[0]);} 
 	    	// http://stackoverflow.com/questions/1625814/get-a-hashset-out-of-the-keys-of-a-hashmap
 
-	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
-	        	 token = token.trim().toLowerCase();
-	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9]");
-		    	 Matcher m = p.matcher(token.toLowerCase());
+for (String token: value.toString().split("\\s*\\b\\s*")) {
+	token = token.trim().toLowerCase();
+	Pattern p = Pattern.compile("^[a-zA-Z0-9]");
+	Matcher m = p.matcher(token.toLowerCase());
 		    	 
-	        	 if (token.toLowerCase().isEmpty() 
-	        	     || stopWords.contains(token.toLowerCase() ))  {
-	    	             continue;
-	    	             } 		 
-	        	 if (!m.find() || value.toString().length() == 0  ) {
-	                 continue;
-	             	     } 
+	if (token.toLowerCase().isEmpty() || stopWords.contains(token.toLowerCase() ))  {
+	  continue;} 		 
+	if (!m.find() || value.toString().length() == 0  ) {
+	  continue;} 
 ```
 
 After previous steps, I write remaining non-stopwords words as output value, and key becomes the numbers of counted characters starting from the first characters, which will be served as the document ID keys for this assignment, since it fits the requirement of uniqueness (it will keep increasing, instead of meeting the duplicate situation). 
@@ -53,28 +50,26 @@ System.out.println("Numbers of output number is: " + c1.getValue());
 ```
 ```
 public static enum UNIQUE {
-		 counter
-		 };
+	counter};
 ```
 
 According to [how to read and write text file in java](http://www.codejava.net/java-se/file-io/how-to-read-and-write-text-file-in-java), I learned that I can further organize the results by creating a output txt file, saving from exploring in the compile log. 
 
 Firstly this is the example file that I was referencing from:
 ```
-	    FileWriter writer = new FileWriter("MyFile.txt", true);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
- 
-            bufferedWriter.write("Hello World");
-            bufferedWriter.newLine();
-            bufferedWriter.write("See You Again!");
+FileWriter writer = new FileWriter("MyFile.txt", true);
+BufferedWriter bufferedWriter = new BufferedWriter(writer);
+bufferedWriter.write("Hello World");
+bufferedWriter.newLine();
+bufferedWriter.write("See You Again!");
 ```
 
 Thus, I edited the code and re-organize into the following code to fit my requirements:
 ```	     
-	      FileWriter writer = new FileWriter("MyFile.txt", true);
-              BufferedWriter bufferedWriter = new BufferedWriter(writer);
-              bufferedWriter.write( String.valueOf( c1.getValue()) );	
-              bufferedWriter.close();
+FileWriter writer = new FileWriter("MyFile.txt", true);
+BufferedWriter bufferedWriter = new BufferedWriter(writer);
+bufferedWriter.write( String.valueOf( c1.getValue()) );	
+bufferedWriter.close();
 ```
 where the counter is embedded right before the reducer output 
 ```
@@ -132,9 +127,9 @@ Finally, after considering several methods to solve the problem including sort()
 
 ```
 List<Integer> numbers = new ArrayList<Integer>();
-numbers.add(3);
-numbers.add(36);
-numbers.add(1);
+	numbers.add(3);
+	numbers.add(36);
+	numbers.add(1);
 Collections.sort(numbers, new Comparator<Integer>() {
 public int compare(Integer num1, Integer num2) {
 	return num1.compareTo(num2);
@@ -279,6 +274,9 @@ if ( (TFLFcmp == 0 && TSLScmp == 0) || (TFLScmp == 0 && TSLFcmp == 0) ){return 0
 
 Secondly, the following requirement is to design the condition to impose. in order to make the comparison, smaller values first; only when smaller values is the same, we turn to bigger value. The method I use is to always check if the front value minus back value is negative. Then it depends on negativity or positivity, we need to flip the position. According to these two constraints, we can tell which one is smaller and how to compare. 
 
+
+
+
 ```
 				int thisflip = 0;
 				int lateflip = 0;
@@ -294,12 +292,16 @@ Secondly, the following requirement is to design the condition to impose. in ord
 				
 				// policy: compare with smaller numbers -> if equal -> compare the other number
 				// *(avoiding the explosive numbers)
-				
-				// t.first & l.first are smaller ---> 1 *(both flip) 
-				// t.first is smaller + l.second is smaller ---> 2 *(this flips)
-				// t.second is smaller + l.first is smaller ----> 3 *(later flips)
-				// t.second is smaller + l.second is smaller ----> 4 *(no flips in both)
-				
+```
+The following code is to perform under the below logic:
+number | Scenario | Action
+------------ | ------------- | -------------
+1 | t.first & l.first are smaller | both flip
+2 | t.first is smaller + l.second is smaller | this flips
+3 | t.second is smaller + l.first is smaller | later flips
+4 | t.second is smaller + l.second is smaller | no flips in both
+
+```
 				if ( ( thisflip == 1 ) && (lateflip == 1) ){ 
 					opendoor = 1;}
 				if ( ( thisflip == 1 ) && (lateflip == 0) ){ 
