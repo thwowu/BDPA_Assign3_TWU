@@ -122,7 +122,7 @@ public class MDP02Pre extends Configured implements Tool {
 
 	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
 	        	 token = token.trim().toLowerCase();
-	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9_]");
+	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9]");
 		    	 Matcher m = p.matcher(token.toLowerCase());
 		    	 
 	        	 if (token.toLowerCase().isEmpty() 
