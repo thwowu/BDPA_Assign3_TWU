@@ -1,11 +1,4 @@
-# BDPA_Assign3_TWU
-
-
-
-
-
-
-
+BDPA_Assign3_TWU
 # Problems 0 
 
 * Remove all StopWords (you can use the StopWords file of your previous assignment), special characters (keep only [a-z],[A-Z] and [0-9]) and keep each unique word only once per line. Don’t keep empty lines
@@ -451,6 +444,8 @@ Finally, [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/p
 
 # Problem 3 : Set-similarity joins (C)
 Explain and justify the difference between a) and b) in the number of performed comparisons, as well as their difference in execution time.
+
+***
 
 comparison | number of performed comparisons | execution time
 ------------ | ------------- | -------------
