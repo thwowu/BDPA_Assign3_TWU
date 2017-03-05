@@ -465,9 +465,11 @@ a| 93096 | 4 mins 49 secs
 b| 93096 | 3 mins 4 secs
 
 
-The reason that although having the same number of performed comparisons, I have less executation time. In my code, the problem A and problem B have the exactly same amount of pairs candidates running through counter. In problem B, the numbers of computation of addAll, and retainAll are less than those in problem A (because in problem B, they are shorter after the equation deduction). 
+Although having the same number of performed comparisons, I have less executation time in problem B. 
 
+In the code, the problem A and problem B have the exactly same amount of pairs candidates that ran through counter. That was why I have the same number of performed comparisons. However, the biggest difference causing the time executation is that, in problem B, the cost in computing addAll, and retainAll. These two functions take much less words to perform the jobs in problem B than in problem A, because the size of the HashSet has been reduced shorter by the equation. 
 
+As a result, problem B has much less time wasted on Jaccard Similiarity function than the time in problem A, benefit from below equation. 
 ```
 long threshold_number = Math.round(Words.length - (Words.length * 0.8) + 1);
 ```
