@@ -17,7 +17,7 @@
 
 ### StopWords Utilization
 
-Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list (the [input file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/stopWords.csv), extracting from pg100.txt) to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
+Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list ([WordCount Input File](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/stopWords.csv), extracting from pg100.txt) to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
 
 ```
 HashSet<String> stopWords = new HashSet<String>();
@@ -192,6 +192,8 @@ Therefore, the output of the reducer finally comes out like this
 ```
 1000,golden silver red blue kitkat
 ```
+
+[Complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/MDP02Pre.java) and [Output file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/part-r-00000) for later Question A and Question B
 
 
 
