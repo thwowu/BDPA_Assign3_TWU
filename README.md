@@ -110,10 +110,23 @@ String pattern;
 		wordcount.put(word[0], word[1]);}
 ```
 
+Then perform routing the global frequency into the similar format as last assignment (document_file_name#frequency -> word#frequency): 
+```
+for (Text num : values) {title.add(num.toString());}
 
+HashSet<String> ti = new HashSet<String>(title);  
+StringBuilder stringBuilder = new StringBuilder();
+     	 
+for (String numi : ti) { 
+	if (numi.length() > 0);{
+	if (stringBuilder.length() > 0) stringBuilder.append(", ");{	        		
+	    stringBuilder.append(numi + "#" + wordcount.get(numi));}
+	    }
+}
+```
+Finally, after considering several methods to solve the problem including sort(), or Arrays.sort(), the youtube video
 
-
-
+[![IMAGE ALT TEXT HERE](http://imgur.com/a/ZZ4S0)](https://www.youtube.com/watch?v=QYvUmIYgsiA)
 
 
 # Problem 1 : Set-similarity joins (A)
