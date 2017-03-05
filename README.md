@@ -471,5 +471,5 @@ In the code, the problem A and problem B have the exactly same amount of pairs c
 
 As a result, problem B has much less time wasted on Jaccard Similiarity function than the time in problem A, benefit from below equation. 
 ```
-long threshold_number = Math.round(Words.length - (Words.length * 0.8) + 1);
+|d| - [t |d|] + 1
 ```
