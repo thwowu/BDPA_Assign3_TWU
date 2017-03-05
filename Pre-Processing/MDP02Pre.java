@@ -112,18 +112,13 @@ public class MDP02Pre extends Configured implements Tool {
 	              throws IOException, InterruptedException {
 	    	
 	    	 
-	    	 HashMap<String, String> Stop = new HashMap<String, String>();
-	    	 rdr = new BufferedReader(new FileReader(
-								new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
-	    	 
+	    	 HashSet<String> stopWords = new HashSet<String>();
+	    	 rdr = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/MDP01D/stopWords.csv")));
 	    	 String pattern;
 				while ((pattern = rdr.readLine()) != null) {
 					String[] word = pattern.split(",");
-					Stop.put(word[0], word[1]);
-				} 
+					stopWords.put(word[0]);} 
 	    	// http://stackoverflow.com/questions/1625814/get-a-hashset-out-of-the-keys-of-a-hashmap
-			HashSet<String> stopWords = new HashSet<String>(Stop.keySet());
-
 
 	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
 	        	 token = token.trim().toLowerCase();
@@ -131,15 +126,12 @@ public class MDP02Pre extends Configured implements Tool {
 		    	 Matcher m = p.matcher(token.toLowerCase());
 		    	 
 	        	 if (token.toLowerCase().isEmpty() 
-	        			 || stopWords.contains(token.toLowerCase() ))  {
-	    	                 continue;
-	    	             } 
-	        			 
-	        	 if (!m.find() 
-	        			 || value.toString().length() == 0  ) {
+	        	     || stopWords.contains(token.toLowerCase() ))  {
+	    	             continue;
+	    	             } 		 
+	        	 if (!m.find() || value.toString().length() == 0  ) {
 	                 continue;
-	             } 
-
+	             	     } 
 	             context.write(key, new Text(token.toLowerCase()));
 	         }
 	      }
