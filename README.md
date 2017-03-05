@@ -213,7 +213,7 @@ Perform all pair-wise comparisons between documents, using the following techniq
 
 #### Each document is handled by a single mapper
 
-As the requirement demands, the previous preparasion in the pre-processing output, can be used as input which has the unique value for each line as the document ID, and its filtered corpus. Thus, the first thing to add to code is the configuration to indicate the input format for mapper. Because I stored the last output as csv by a commas, therefore I define my separator here as commas so the mapper can quickly take the key & value correctly. 
+As the requirement demands, the previous preparasion in the [pre-processing output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/rawinput.csv), can be used as input which has the unique value for each line as the document ID, and its filtered corpus. Thus, the first thing to add to code is the configuration to indicate the input format for mapper. Because I stored the last output as csv by a commas, therefore I define my separator here as commas so the mapper can quickly take the key & value correctly. 
 
 ```
 job.getConfiguration().set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", ",");
@@ -376,7 +376,36 @@ value: define wind custom breathe deep going learning
 
 ***
 
-So we are going to define a custom class that is going to hold the two words together.
+For the starter, I start to implement a new function to calculate Jaccard similarity, inpsired by [jaccard similarity index-for measuring document similarity] (https://nickgrattan.wordpress.com/2014/02/18/jaccard-similarity-index-for-measuring-document-similarity/) and the collection function learned from [this discussion page](http://stackoverflow.com/questions/13648391/collection-addall-removeall-returns-boolean) for addAll, removeAll, and retainAll . 
+```
+public double JaSim(HashSet<String> hs1, HashSet<String> hs2){
+	HashSet <String> Intersection = new HashSet <String> (hs1);
+	HashSet <String> Union = new HashSet <String> (hs2);
+			
+	Intersection.retainAll(hs2); // hs1 intersects with hs2 
+	Union.addAll(hs1); // hs2 +++ hs1 is the union *(putting all together without duplicate)
+		     
+	int Uni = Union.size();
+	int InS = Intersection.size();
+	return (double) Uni / InS ;
+			 } 
+```
+
+In Reducer, I also utilize the function from TextPair, to get the first and second object in the pair. Then I can use the two value (in String form) to call the text values. By splitting them into HashSet, the Jaccard similarity can compare it by addAll, removeAll, and retainAll functions and count its size to generate similarity value. 
+
+```
+HashSet<String> secondset = new HashSet<String>();
+String twostrings = ProcessedDoc.get(keytwo);
+for (String e : twostrings.split(" ")) {
+	secondset.add(e);}
+```
+And the calculation and the output of Reducer, with threshold 0.8 as required
+```
+double sim = JaSim(firstset, secondset);
+if (sim >= 0.8) {context.write(new Text( "(" + key.toString()+ ")" ), new Text(String.valueOf(sim)) );}
+```
+
+[the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/part-r-00000) & [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MDP022.java) & [counter output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MyFile.txt)
 
 [](Comment text goes here)
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/A.png)
