@@ -475,3 +475,5 @@ As a result, problem B has much less time wasted on Jaccard Similiarity function
 ```
 |d| - [t |d|] + 1
 ```
+
+The console log can be viewed [here](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/log)
