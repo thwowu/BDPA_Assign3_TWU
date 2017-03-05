@@ -394,10 +394,15 @@ public double JaSim(HashSet<String> hs1, HashSet<String> hs2){
 In Reducer, I also utilize the function from TextPair, to get the first and second object in the pair. Then I can use the two value (in String form) to call the text values. By splitting them into HashSet, the Jaccard similarity can compare it by addAll, removeAll, and retainAll functions and count its size to generate similarity value. 
 
 ```
+String keyone = key.getFirst().toString();  
+String keytwo = key.getSecond().toString(); 
+
 HashSet<String> secondset = new HashSet<String>();
 String twostrings = ProcessedDoc.get(keytwo);
 for (String e : twostrings.split(" ")) {
 	secondset.add(e);}
+	
+// firstset HashSet will be really similar to what I done to secondset HashSet	
 ```
 And the calculation and the output of Reducer, with threshold 0.8 as required
 ```
