@@ -30,7 +30,7 @@ HashSet<String> stopWords = new HashSet<String>();
 
 	    	 for (String token: value.toString().split("\\s*\\b\\s*")) {
 	        	 token = token.trim().toLowerCase();
-	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9_]");
+	        	 Pattern p = Pattern.compile("^[a-zA-Z0-9]");
 		    	 Matcher m = p.matcher(token.toLowerCase());
 		    	 
 	        	 if (token.toLowerCase().isEmpty() 
@@ -56,6 +56,11 @@ Counters counters = job.getCounters();
 Counter c1 = counters.findCounter(UNIQUE.counter);
 System.out.println("Numbers of output number is: " + c1.getValue());
 ```
+```
+public static enum UNIQUE {
+		 counter
+		 };
+```
 
 According to [how to read and write text file in java](http://www.codejava.net/java-se/file-io/how-to-read-and-write-text-file-in-java), I learned that I can further organize the results by creating a output txt file, saving from exploring in the compile log. 
 
@@ -76,6 +81,37 @@ Thus, I edited the code and re-organize into the following code to fit my requir
               bufferedWriter.write( String.valueOf( c1.getValue()) );	
               bufferedWriter.close();
 ```
+where the counter is embedded right before the reducer output 
+```
+context.getCounter(UNIQUE.counter).increment(1);
+```
+
+### Ascending Order of Global Frequency
+
+The goal in the reducer can be divided into two three parts: Firstly, we can use the global frequency, more specifically speaking, WordCount in assignment 0. Secondly, we use the technique used in the assignment 2 to insert the frequency to the specific word. Lastly, the most challenging part is to sort a list by its elements' integers. 
+
+Firstly, we import the global frequency by the followings. Apart from using the HashSet, here referecing from [WordCount result to be the number in the later use](http://stackoverflow.com/questions/16246821/how-to-get-values-keys-from-hashmap), considering that I would like to call the values (frequency) by its word (key),  this example fits the requirement perfectly.
+```
+Set set = (Set) map.entrySet();
+Iterator it = set.iterator();
+while(it.hasNext()){
+    Map.Entry entry = mapIterator.next();
+    System.out.print(entry.getKey() + " : " + entry.getValue());
+}
+```
+Therefore we can revise the code and turn them into the following code for storing the WordCount information:
+```
+HashMap<String, String> wordcount = new HashMap<String, String>();
+reader = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/WordCount/output/WordCount.csv")));
+
+String pattern;
+	while ((pattern = reader.readLine()) != null) {
+		String[] word = pattern.split(",");
+		wordcount.put(word[0], word[1]);}
+```
+
+
+
 
 
 
