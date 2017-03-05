@@ -126,7 +126,7 @@ for (String numi : ti) {
 ```
 Finally, after considering several methods to solve the problem including sort(), or Arrays.sort(), the youtube video
 
-[![IMAGE ALT TEXT HERE](http://imgur.com/a/ZZ4S0)](https://www.youtube.com/watch?v=QYvUmIYgsiA)
+[![IMAGE ALT TEXT HERE](https://i.imgur.com/zR2KWD7l.png)](https://www.youtube.com/watch?v=QYvUmIYgsiA)
 
 
 # Problem 1 : Set-similarity joins (A)
