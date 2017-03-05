@@ -376,7 +376,7 @@ value: define wind custom breathe deep going learning
 
 ***
 
-For the starter, I start to implement a new function to calculate Jaccard similarity, inpsired by [jaccard similarity index-for measuring document similarity] (https://nickgrattan.wordpress.com/2014/02/18/jaccard-similarity-index-for-measuring-document-similarity/) and the collection function learned from [this discussion page](http://stackoverflow.com/questions/13648391/collection-addall-removeall-returns-boolean) for addAll, removeAll, and retainAll . 
+After finishing Mapper alteration, in Recducer, I implement a new function to calculate Jaccard similarity, inpsired by [jaccard similarity index-for measuring document similarity] (https://nickgrattan.wordpress.com/2014/02/18/jaccard-similarity-index-for-measuring-document-similarity/) and the collection function learned from [this discussion page](http://stackoverflow.com/questions/13648391/collection-addall-removeall-returns-boolean) for addAll, removeAll, and retainAll . 
 ```
 public double JaSim(HashSet<String> hs1, HashSet<String> hs2){
 	HashSet <String> Intersection = new HashSet <String> (hs1);
