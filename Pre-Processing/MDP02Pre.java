@@ -217,8 +217,6 @@ public class MDP02Pre extends Configured implements Tool {
 	          *         the space          : " "
 	          * and finally use the frequency integer to sort 
 	          */
-
-	         // List<String> wordswithcountL = Arrays.asList(stringBuilder.toString().split("\\s*,\\s*")); 
 	         // firstly split it by the commas, and into elements
 	         // example: yellow#3001
 
@@ -247,15 +245,6 @@ public class MDP02Pre extends Configured implements Tool {
 	    		 
 	         StringBuilder newsortedbyFreq = new StringBuilder();
 	         
-	         /*
-	         for (String numi : rangingData) { 
-		            if (numi.length() > 0);{
-		        	  if (newsortedbyFreq.length() > 0) newsortedbyFreq.append(", ");{	        		
-		        		  newsortedbyFreq.append(numi);
-		         }
-		       }
-			 }
-			 */
 	         for (String numi : rangingData) { 
 		            if (numi.length() > 0);{
 		        	  if (newsortedbyFreq.length() > 0) newsortedbyFreq.append(" ");{	        		
