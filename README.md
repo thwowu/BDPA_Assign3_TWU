@@ -1,5 +1,7 @@
 BDPA_Assign3_TWU
-# Problems 0 
+# Problems 0 - Pre-processing the input
+In this assignment, you will use the document corpus of [pg100.txt](http://www.gutenberg.org/cache/epub/100/pg100.txt), as in your previous assignments, assuming that each line represents a distinct document (treat the line number as a document id). Implement a pre-processing job in which you will:
+
 
 * Remove all StopWords (you can use the StopWords file of your previous assignment), special characters (keep only [a-z],[A-Z] and [0-9]) and keep each unique word only once per line. Don’t keep empty lines
 * Store on HDFS the number of output records (i.e., total lines)} 
