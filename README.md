@@ -294,12 +294,15 @@ Secondly, the following requirement is to design the condition to impose. in ord
 				// *(avoiding the explosive numbers)
 ```
 The following code is to perform under the below logic:
-number | Scenario | Action
+
+
+number representation | Scenario | Action
 ------------ | ------------- | -------------
 1 | t.first & l.first are smaller | both flip
 2 | t.first is smaller + l.second is smaller | this flips
 3 | t.second is smaller + l.first is smaller | later flips
 4 | t.second is smaller + l.second is smaller | no flips in both
+
 
 ```
 				if ( ( thisflip == 1 ) && (lateflip == 1) ){ 
