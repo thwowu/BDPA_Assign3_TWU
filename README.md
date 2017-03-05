@@ -454,8 +454,10 @@ Explain and justify the difference between a) and b) in the number of performed 
 
 number of performed comparisons
 a) 93096
-b) 
+b) 93096
 
 execution time
 a) 4 mins 49 secs
 b) 3 mins 4 secs
+
+The reason that although having the same number of performed comparisons, I have less executation time. In my code, the problem A and problem B have the exactly same amount of pairs candidates running through counter. In problem B, the numbers of computation of addAll, and retainAll are less than those in problem A (because in problem B, they are shorter after the equation deduction). 
