@@ -193,8 +193,7 @@ Therefore, the output of the reducer finally comes out like this
 1000,golden silver red blue kitkat
 ```
 
-[Complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/MDP02Pre.java) and [Output file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/part-r-00000) for later Question A and Question B
-
+[Complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/MDP02Pre.java) and [Output file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/part-r-00000) as the input for later Question A and Question B.
 
 
 # Problem 1 : Set-similarity joins (A)
@@ -212,24 +211,170 @@ Perform all pair-wise comparisons between documents, using the following techniq
 
 *** 
 
-According to the assignment instruction, the first point is to compare a pair of documents, which can be string. The second point is to have a method to create index number for each line, which can be regarded as a document in this case. As a result, in this exercise, firstly it is required to have a file that should have a index value to be the document ID, and its context after the document ID. Each document ID is served to present a line and do the configuration to read key and values, separated by commas (because the file is stored in .csv format ) from the input files
+#### Each document is handled by a single mapper
 
-It allows us to pair ID with each other, in response to “The map method should emit, for each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value. ” As a result, at the intermediate output from Mapper, key verse value should be something similar to a pair of numbers (Document ID) verse each line’s context (without stopwords). 
- 
+As the requirement demands, the previous preparasion in the pre-processing output, can be used as input which has the unique value for each line as the document ID, and its filtered corpus. Thus, the first thing to add to code is the configuration to indicate the input format for mapper. Because I stored the last output as csv by a commas, therefore I define my separator here as commas so the mapper can quickly take the key & value correctly. 
 
-According to the instruction, “In the reduce phase, perform the Jaccard computations for all/some selected pairs.”, in order to perform Jaccard computations, it is necessary to create a new function to make the calculation in any pair candidates. \\
+```
+job.getConfiguration().set("mapreduce.input.keyvaluelinerecordreader.key.value.separator", ",");
+```
 
-What we have here, are 1) the candidates to be compare, with its document ID (line) 2) only the corpus from the 1st element in the par. By extracting the key coming from mapper, we can obtain the 2nd element’s document ID. Then we use the ID number to call back its corresponding corpus, with the help of importing the same file which was imported in mapper as well.\\
+#### Key & Value in Mapper
 
-After that, I can circulate the stream of each corpus into Jaccard computation to get a value for each pair. Register one iteration as the system performed one time of comparison. The required threshold similarity > 0.8, is set as the condition in the output. Stepping further to look at Question II, where demands to “Output only similar pairs on HDFS, in TextOutputFormat. Report the execution time and the number of performed comparisons.”, it is necessary to write the pair, accompany with its similarity and text.
+Bascially, the first half is very similar to the pre-processing part, but the import file is very different this time. This time i import the same file as input file, where comes from pre-processing output. The purpose is that I want to pull out the doucment IDs from other sources, so that, when the key is pointing at one documents ID, I will have a list of all the possible candidates to map out to the pair. 
 
-Referencing from the tutorial of the book Hadoop – The Definitive Guide, written by Tom White, at page 149, he introduces an implementation that represents a pair of strings, called TextPair with its example code.
+```
+HashSet<String> Di = new HashSet<String>();
+rdr = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/MDP02Pre/rawinput.csv")));
+String pattern;
+while ((pattern = rdr.readLine()) != null) {
+	String[] word = pattern.split(",");
+	Di.add(word[0]);
+```
+
+Here I tried a python-type mapping method but turns out not competiable to java-hadoop mapreduce. This first try is to use two for loop functions to all the possible combination. Later use another for loop function to delete the repeated duplicates. 
+
+```
+int nu = keylist.indexOf(key);
+for(int i=0; i < nu+1; i++){decre.remove(i);}
+			
+StringBuilder stringBuilder = new StringBuilder();
+for (String numi : decre)  {if (key.toString().equals(decre)) {continue;}
+stringBuilder.append(key + "," + numi);
+String k = stringBuilder.toString();
+context.write(new Text(k.toString()), new Text(value.toString()));
+```
+This try result in a system crash that there is no output from reducer. Then I turn to find the solution on the internet. Some examples concerning Jarccord similarity use the custom set of Writable implementations that I also found it in the book  Hadoop - The Definitive Guide The Fourth Edition by Tom White. At page 121, he demonstrate the example code for an implementation that represents a pair of strings, called TextPair.
+
+Basically I took the example and revise "compareTo" function becaue the example is made to compare two strings lexicographically. "If both the strings are equal then this method returns 0 else it returns positive or negative value. The result is positive if the first string is lexicographically greater than the second string else the result would be negative", quoted from the book. The example code can be used for the scenario:
+
+```
+[ 20 ] = [ 20 ]
+ this    latter
+```
+However, our current task is to match out the duplicate like-----
+```
+[ 1233, 100 ] = [ 100, 1233 ] as duplicate
+  this              late     <--- not specified enough to operate the comparison
+```
+To sum up, in this task, we have 4 integer values that we have to consider:
+* this.first
+* this.second
+* late.first
+* late.second
 
 
-The original objective the bone code, is designed to count the frequency of the occurrence of two words together in the text. I plan to use the idea of holding two words, and transform the idea into holding two values (in our case, it is the index of lines that the documents belonging to).
+the duplicate will be defined as
+```
+this.first == this.second (skipped in the if condition already)
 
-The further transformation from this bone code, is to equip with the capability of removing the duplicated set of pairs, since the requirement mentioning that “Make sure that the same pair of documents is compared no more than once” to save the time spent on computation. 
+this.first == late.first  &&  this.second == late.second
+      TF            LF             TS              LS
+this.first == late.second &&  this.second == late.first
+      TF            LS               TS             LF
+```
+Which is being realized by the following code:
+```
+int TFLFcmp = this.first.compareTo(late.first); 
+int TSLScmp = this.second.compareTo(late.second); 
+int TFLScmp = this.first.compareTo(late.second); 
+int TSLFcmp = this.second.compareTo(late.first); 
+if ( (TFLFcmp == 0 && TSLScmp == 0) || (TFLScmp == 0 && TSLFcmp == 0) ){return 0;}
+```
 
+Secondly, the following requirement is to design the condition to impose. in order to make the comparison, smaller values first; only when smaller values is the same, we turn to bigger value. The method I use is to always check if the front value minus back value is negative. Then it depends on negativity or positivity, we need to flip the position. According to these two constraints, we can tell which one is smaller and how to compare. 
+
+```
+				int thisflip = 0;
+				int lateflip = 0;
+				int opendoor = 0;
+				int finalresult = 0;
+				
+				if (this.first.compareTo(this.second) < 0){
+					thisflip = 1;
+					}
+				if (late.first.compareTo(late.second) < 0){
+					lateflip = 1;
+					}
+				
+				// policy: compare with smaller numbers -> if equal -> compare the other number
+				// *(avoiding the explosive numbers)
+				
+				// t.first & l.first are smaller ---> 1 *(both flip) 
+				// t.first is smaller + l.second is smaller ---> 2 *(this flips)
+				// t.second is smaller + l.first is smaller ----> 3 *(later flips)
+				// t.second is smaller + l.second is smaller ----> 4 *(no flips in both)
+				
+				if ( ( thisflip == 1 ) && (lateflip == 1) ){ 
+					opendoor = 1;}
+				if ( ( thisflip == 1 ) && (lateflip == 0) ){ 
+					opendoor = 2;}
+				if ( ( thisflip == 0 ) && (lateflip == 1) ){ 
+					opendoor = 3;}
+				if ( ( thisflip == 0 ) && (lateflip == 0) ){ 
+					opendoor = 4;}
+				
+				if ( (opendoor == 1) ){ 
+					if (TFLFcmp == 0) {
+						finalresult = TSLScmp;
+					} else {
+						finalresult = TFLFcmp;
+					}
+				}
+				
+				if ( (opendoor == 2)){ 
+					if (TFLScmp == 0) {
+						finalresult = TSLFcmp;
+					} else {
+						finalresult = TFLScmp;
+					}
+				}
+				
+				if ( (opendoor == 3)){ 
+					if (TSLFcmp == 0) {
+						finalresult = TFLScmp;
+					}else {
+						finalresult = TSLFcmp;
+					}
+				}
+				
+				if ( (opendoor == 4)){ 
+					if (TSLScmp == 0) {
+						finalresult = TFLFcmp;
+					}else {
+						finalresult = TSLScmp;
+					} }
+				
+				return finalresult;
+```
+
+After that, the class TextPair is placed outside the MDP022 class and to be called later when it is used, with the implementation in configuration. 
+```
+job.setMapOutputKeyClass(TextPair.class);
+```
+And add a for loop to take key as Document ID and group it with any possible combination. Upon finished, there are 2 conditions to make sure to achieve original objective, 1. if ID numbers are the same, we don't register; 2. using TextPair class to check if there are duplicate ex: (0,630) = (630,0).
+
+```
+String ID = key.toString();
+for (String line : Di) {
+	Pattern p = Pattern.compile("[0-9]");
+	String Keystring = key.toString();
+	Matcher m = p.matcher(Keystring.trim());
+		 if (Keystring.isEmpty() ) {continue;} 
+		 if (!m.find()) {continue;}
+		 if ( ID.equals(line) ) {continue;}
+	Pair.set(new Text(Keystring), new Text(line) );
+	context.write(Pair, new Text(value.toString() ));}
+	}
+```
+
+So far the intermediate output from mapper will look like as 
+```
+key: 0,640
+value: define wind custom breathe deep going learning
+```
+
+***
 
 So we are going to define a custom class that is going to hold the two words together.
 
