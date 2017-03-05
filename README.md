@@ -13,6 +13,10 @@
 * Order the tokens of each line in ascending order of global frequency.
 
 
+***
+
+### StopWords Utilization
+
 Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
 
 ```
@@ -43,6 +47,36 @@ After previous steps, I write remaining non-stopwords words as output value, and
 ```
 context.write(key, new Text(token.toLowerCase()));
 ```
+
+### Counter & its Output
+
+From the assignment I, I already implemented a code that printing out the counter value at the CONSOLE, where I took the reference from [imageterrier](http://www.imageterrier.org/HadoopImageTerrier/apidocs/org/terrier/indexing/HadoopIndexerMapper.Counters.html). 
+```
+Counters counters = job.getCounters();
+Counter c1 = counters.findCounter(UNIQUE.counter);
+System.out.println("Numbers of output number is: " + c1.getValue());
+```
+
+According to [how to read and write text file in java](http://www.codejava.net/java-se/file-io/how-to-read-and-write-text-file-in-java), I learned that I can further organize the results by creating a output txt file, saving from exploring in the compile log. 
+
+Firstly this is the example file that I was referencing from:
+```
+	    FileWriter writer = new FileWriter("MyFile.txt", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+ 
+            bufferedWriter.write("Hello World");
+            bufferedWriter.newLine();
+            bufferedWriter.write("See You Again!");
+```
+
+Thus, I edited the code and re-organize into the following code to fit my requirements:
+```	     
+	      FileWriter writer = new FileWriter("MyFile.txt", true);
+              BufferedWriter bufferedWriter = new BufferedWriter(writer);
+              bufferedWriter.write( String.valueOf( c1.getValue()) );	
+              bufferedWriter.close();
+```
+
 
 
 
