@@ -405,7 +405,7 @@ double sim = JaSim(firstset, secondset);
 if (sim >= 0.8) {context.write(new Text( "(" + key.toString()+ ")" ), new Text(String.valueOf(sim)) );}
 ```
 
-[the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/part-r-00000) & [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MDP022.java) & [counter output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MyFile.txt)
+[the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/part-r-00000) & [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MDP022.java)
 
 [](Comment text goes here)
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/A.png)
@@ -414,10 +414,48 @@ if (sim >= 0.8) {context.write(new Text( "(" + key.toString()+ ")" ), new Text(S
 # Problem 2 : Set-similarity joins (B)
 Create an inverted index, only for the first $|d| - [t |d|] + 1$ words of each document d (remember that they are stored in ascending order of frequency). In your reducer, compute the similarity of the document pairs. Output only similar pairs on HDFS, in TextOutputFormat. Report the execution time and the number of performed
 comparisons.
-    
+
+***
+
+The mapper part is completely the same as Problem 1. I choose to manipulate the inverted index at Reducer, mainly. The method is the same to extract: using the ID from key, get the text in HashMap by key. Secondly, by splitting the whole string by space, having the numbers of the words as $d$, $t$ = threshold = 0.8
+
+The trickist part is learned from the reference, [get only part of an Array in Java?](http://stackoverflow.com/questions/11001720/get-only-part-of-an-array-in-java) where it imposes the answer about how to Use copyOfRange method from java.util.Arrays class. 
+```
+   //index   0   1   2   3   4
+int[] arr = {10, 20, 30, 40, 50};
+Arrays.copyOfRange(arr, 0, 2);          // returns {10, 20}
+Arrays.copyOfRange(arr, 1, 4);          // returns {20, 30, 40}
+Arrays.copyOfRange(arr, 2, arr.length); // returns {30, 40, 50} (length = 5)
+```
+As a result, the code that I took is "Arrays.copyOfRange(Words, 0, (int) threshold_number);" to be a list of strings that I can call them back into a HashSet by ennumurations. I took the simpler solution that I wrote where I consider the longer code might cause longer computation time and larger memory. 
+
+```
+String keyone = key.getFirst().toString();  
+String keytwo = key.getSecond().toString();    	
+
+HashSet<String> secondset = new HashSet<String>();
+
+String twostrings = ProcessedDoc.get(keytwo);
+String[] Words = twostrings.split(" ");
+long threshold_number = Math.round(Words.length - (Words.length * 0.8) + 1);
+// https://www.tutorialspoint.com/java/number_round.htm
+String[] wordstokeepL = Arrays.copyOfRange(Words, 0, (int) threshold_number);
+for (String wordtokeep : wordstokeepL) {
+	secondset.add(wordtokeep);}
+```
+
+Finally, [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/part-r-00000) and [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/MDP022B.java)
+
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/B.png)
 
 
 # Problem 3 : Set-similarity joins (C)
 Explain and justify the difference between a) and b) in the number of performed comparisons, as well as their difference in execution time.
 
+number of performed comparisons
+a) 93096
+b) 
+
+execution time
+a) 4 mins 49 secs
+b) 3 mins 4 secs
