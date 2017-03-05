@@ -17,7 +17,7 @@
 
 ### StopWords Utilization
 
-Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
+Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list (the [input file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/stopWords.csv), extracting from pg100.txt) to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
 
 ```
 HashSet<String> stopWords = new HashSet<String>();
@@ -99,7 +99,7 @@ while(it.hasNext()){
     System.out.print(entry.getKey() + " : " + entry.getValue());
 }
 ```
-Therefore we can revise the code and turn them into the following code for storing the WordCount information:
+Therefore we can revise the code and turn them into the following code for storing the WordCount information, and this is [the input file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/WordCount.csv) that I use :
 ```
 HashMap<String, String> wordcount = new HashMap<String, String>();
 reader = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/WordCount/output/WordCount.csv")));
@@ -129,6 +129,7 @@ So far at this step, I have the stream of value as
 ```
 golden#3, silver#10, red#30, blue#200, kitkat#2
 ```
+
 
 
 Finally, after considering several methods to solve the problem including sort(), or Arrays.sort(), the youtube video introduces how to sort Lists - ArrayLists and LinkedLists - in terms of Comparators, and how to make use of the Collection interface which is very useful in this assignment since the sorted is done per line. 
@@ -187,16 +188,15 @@ StringBuilder newsortedbyFreq = new StringBuilder();
 	context.write(key, new Text(newsortedbyFreq.toString()
 	       .replaceAll("#\\d+", "").replaceAll(",", "").replaceAll("__#null", "")));
 ```
-
-
-
-
-
-
+Therefore, the output of the reducer finally comes out like this
+```
+1000,golden silver red blue kitkat
+```
 
 
 
 # Problem 1 : Set-similarity joins (A)
+
 Perform all pair-wise comparisons between documents, using the following technique: Each document is handled by a single mapper (remember that lines are used to represent documents in this assignment). The map method should emit, for each document, the document id along with one other document id as a key (one such pair for each other document in the corpus) and the document’s content as a value. In the reduce phase, perform the Jaccard computations for all/some selected pairs. Output only similar pairs on HDFS, in TextOutputFormat. Make sure that the same pair of documents is compared no more than once. Report the execution time and the number of performed comparisons.
 
 
