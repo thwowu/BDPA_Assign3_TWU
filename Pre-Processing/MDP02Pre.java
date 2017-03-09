@@ -260,7 +260,11 @@ public class MDP02Pre extends Configured implements Tool {
 	          */
 	         context.getCounter(UNIQUE.counter).increment(1);
 	         
-	         context.write(key, new Text(newsortedbyFreq.toString()
+	         
+	         String nujj = String.valueOf(context.getCounter(UNIQUE.counter).getValue());
+	         
+	         
+	         context.write(new Text(nujj.toString()), new Text(newsortedbyFreq.toString()
 		     		.replaceAll("#\\d+", "").replaceAll(",", "").replaceAll("__#null", "")));
 	      }
 	   }
