@@ -138,7 +138,8 @@ public int compare(Integer num1, Integer num2) {
 ```
 Here I need to firstly split them by commas so they will be broken into chunks as List elements to iterate. Then I re-use the pattern to group two pattern seperately: "non-integer characters and #" & "integer", because I would like to compare the sequence and sort them according to its value. 
 
-Then I have to put back the chunks back together by Stringbulder. Consdering that there's no further need to splitting, for later use in question A and question B, here I try to eliminate the hashtag and let the different words seperated only by space. 
+Then I have to put back the chunks back together by Stringbulder. Consdering that there's no further need to splitting, for later use in question A and question B, here I try to eliminate the hashtag and let the different words seperated only by space. At the end of the code, I will use the global counter to print out the sequential number to be the key of Reducer output. 
+
 ```
 golden silver red blue kitkat
 ```
@@ -175,14 +176,19 @@ StringBuilder newsortedbyFreq = new StringBuilder();
 	          * If it is empty or null, increment the NULL_OR_EMPTY_COUNTER counter by 1
 	          * context.getCounter(STATE_COUNTER_GROUP, NULL_OR_EMPTY_COUNTER).increment(1);
 	          */
-	context.getCounter(UNIQUE.counter).increment(1);
+	         String nujj = String.valueOf(context.getCounter(UNIQUE.counter).getValue());
 	         
-	context.write(key, new Text(newsortedbyFreq.toString()
-	       .replaceAll("#\\d+", "").replaceAll(",", "").replaceAll("__#null", "")));
+	         
+	         context.write(new Text(nujj.toString()), new Text(newsortedbyFreq.toString()
+		     		.replaceAll("#\\d+", "").replaceAll(",", "").replaceAll("__#null", "")));
 ```
 Therefore, the output of the reducer finally comes out like this
 ```
-1000,golden silver red blue kitkat
+1,golden silver red blue kitkat
+2,context silver red finally kitkat
+3,golden context red blue kitkat
+4,golden silver context finally kitkat
+
 ```
 
 [Complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/MDP02Pre.java) and [Output file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/part-r-00000) as the input for later Question A and Question B.
@@ -337,24 +343,11 @@ number representation | Scenario | Action
 						finalresult = TFLScmp;
 					}else {
 						finalresult = TSLFcmp;
-					}
-				}
-				
-				if ( (opendoor == 4)){ 
-					if (TSLScmp == 0) {
-						finalresult = TFLFcmp;
-					}else {
-						finalresult = TSLScmp;
-					} }
-				
-				return finalresult;
-```
 
-After that, the class TextPair is placed outside the MDP022 class and to be called later when it is used, with the implementation in configuration. 
 ```
-job.setMapOutputKeyClass(TextPair.class);
-```
-And add a for loop to take key as Document ID and group it with any possible combination. Upon finished, there are 2 conditions to make sure to achieve original objective, 1. if ID numbers are the same, we don't register; 2. using TextPair class to check if there are duplicate ex: (0,630) = (630,0).
+First of all, I start by creating a for loop to group all Document ID with any possible combination. Upon finished, there are 2 conditions to make sure to achieve original objective, 1. if ID numbers are the same, we don't register; 2. transforming the string into integer to avoid writing the latter element in a pair is lower than the first element. For example, the pair (3,1) has been created when creates (1,3) in round (1) = Keystring. 
+
+If the key and corresponding document ID are satisfying with prosposed conditions, the system will output the pair as a Text to pass to Reducer. 
 
 ```
 String ID = key.toString();
@@ -365,14 +358,19 @@ for (String line : Di) {
 		 if (Keystring.isEmpty() ) {continue;} 
 		 if (!m.find()) {continue;}
 		 if ( ID.equals(line) ) {continue;}
-	Pair.set(new Text(Keystring), new Text(line) );
-	context.write(Pair, new Text(value.toString() ));}
+	StringBuilder stringBuilder = new StringBuilder();
+				
+	int wo = Integer.parseInt(Keystring);
+	int lineline = Integer.parseInt(line);
+	if ( wo > lineline ) {continue;}
+	stringBuilder.append(Keystring + "," +line);
+	context.write(new Text(stringBuilder.toString()), new Text(value.toString() ) );
 	}
 ```
 
 So far the intermediate output from mapper will look like as 
 ```
-key: 0,640
+key: 1,300
 value: define wind custom breathe deep going learning
 ```
 
@@ -381,23 +379,24 @@ value: define wind custom breathe deep going learning
 After finishing Mapper alteration, in Recducer, I implement a new function to calculate Jaccard similarity, inpsired by [jaccard similarity index-for measuring document similarity] (https://nickgrattan.wordpress.com/2014/02/18/jaccard-similarity-index-for-measuring-document-similarity/) and the collection function learned from [this discussion page](http://stackoverflow.com/questions/13648391/collection-addall-removeall-returns-boolean) for addAll, removeAll, and retainAll . 
 ```
 public double JaSim(HashSet<String> hs1, HashSet<String> hs2){
-	HashSet <String> Intersection = new HashSet <String> (hs1);
-	HashSet <String> Union = new HashSet <String> (hs2);
+	Set <String> Intersection = new HashSet <String> (hs1);
+	Set <String> Union = new HashSet <String> (hs2);
 			
 	Intersection.retainAll(hs2); // hs1 intersects with hs2 
 	Union.addAll(hs1); // hs2 +++ hs1 is the union *(putting all together without duplicate)
-		     
-	int Uni = Union.size();
 	int InS = Intersection.size();
-	return (double) Uni / InS ;
-			 } 
+	int Uni = Union.size();
+	
+	return (double) InS / Uni ;
+	} 
 ```
 
 In Reducer, I also utilize the function from TextPair, to get the first and second object in the pair. Then I can use the two value (in String form) to call the text values. By splitting them into HashSet, the Jaccard similarity can compare it by addAll, removeAll, and retainAll functions and count its size to generate similarity value. 
 
 ```
-String keyone = key.getFirst().toString();  
-String keytwo = key.getSecond().toString(); 
+String[] ke = key.toString().split(",");
+String keyone = ke[0];  
+String keytwo = ke[1];    
 
 HashSet<String> secondset = new HashSet<String>();
 String twostrings = ProcessedDoc.get(keytwo);
@@ -406,7 +405,9 @@ for (String e : twostrings.split(" ")) {
 	
 // firstset HashSet will be really similar to what I done to secondset HashSet	
 ```
-And the calculation and the output of Reducer, with threshold 0.8 as required
+
+The calculation and the output of Reducer, with threshold 0.8 as required.
+
 ```
 double sim = JaSim(firstset, secondset);
 if (sim >= 0.8) {context.write(new Text( "(" + key.toString()+ ")" ), new Text(String.valueOf(sim)) );}
@@ -426,16 +427,6 @@ comparisons.
 
 The mapper part is completely the same as Problem 1. I choose to manipulate the inverted index at Reducer, mainly. The method is the same to extract: using the ID from key, get the text in HashMap by key. Secondly, by splitting the whole string by space, having the numbers of the words as $d$, $t$ = threshold = 0.8
 
-The trickist part is learned from the reference, [get only part of an Array in Java?](http://stackoverflow.com/questions/11001720/get-only-part-of-an-array-in-java) where it imposes the answer about how to Use copyOfRange method from java.util.Arrays class. 
-```
-   //index   0   1   2   3   4
-int[] arr = {10, 20, 30, 40, 50};
-Arrays.copyOfRange(arr, 0, 2);          // returns {10, 20}
-Arrays.copyOfRange(arr, 1, 4);          // returns {20, 30, 40}
-Arrays.copyOfRange(arr, 2, arr.length); // returns {30, 40, 50} (length = 5)
-```
-As a result, the code that I took is "Arrays.copyOfRange(Words, 0, (int) threshold_number);" to be a list of strings that I can call them back into a HashSet by ennumurations. I took the simpler solution that I wrote where I consider the longer code might cause longer computation time and larger memory. 
-
 ```
 String keyone = key.getFirst().toString();  
 String keytwo = key.getSecond().toString();    	
@@ -446,9 +437,9 @@ String twostrings = ProcessedDoc.get(keytwo);
 String[] Words = twostrings.split(" ");
 long threshold_number = Math.round(Words.length - (Words.length * 0.8) + 1);
 // https://www.tutorialspoint.com/java/number_round.htm
-String[] wordstokeepL = Arrays.copyOfRange(Words, 0, (int) threshold_number);
-for (String wordtokeep : wordstokeepL) {
-	secondset.add(wordtokeep);}
+for (int r = 0; r < (int) threshold_number ; ++r ){
+	secondset.add(Words[r]);}
+	
 ```
 
 Finally, [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/part-r-00000) and [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/MDP022B.java)
@@ -463,8 +454,8 @@ Explain and justify the difference between a) and b) in the number of performed 
 
 comparison | number of performed comparisons | execution time
 ------------ | ------------- | -------------
-a| 93096 | 4 mins 49 secs
-b| 93096 | 3 mins 4 secs
+a| 169071 | 1 mins 15 secs
+b| 169071 | 1 mins 10 secs
 
 
 Although having the same number of performed comparisons, I have less executation time in problem B. 
