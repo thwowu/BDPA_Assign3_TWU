@@ -370,7 +370,7 @@ for (String line : Di) {
 
 So far the intermediate output from mapper will look like as 
 ```
-key: 1,300
+key: 230
 value: define wind custom breathe deep going learning
 ```
 
