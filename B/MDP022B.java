@@ -189,8 +189,27 @@ public class MDP022B extends Configured implements Tool {
 			for (int h = 0; h < (int) threshold_numberone ; ++h ){
 					 firstset.add(Words_one[h]); }
  
+			double sim = 0;
+			if (firstset.size() == 1){
+				String fr = Words_one[0];
+				if (secondset.contains(fr)) {
+					sim = 1;}
+				else{
+					context.getCounter(UNIQUE.counter).increment(1);
+					sim = JaSim(firstset, secondset); }
+			}
+			else if (secondset.size() == 1) {
+				String cr = Words[0];
+				if (firstset.contains(cr)) {
+					sim = 1;}
+				else{
+					context.getCounter(UNIQUE.counter).increment(1);
+					sim = JaSim(firstset, secondset); }
+			}
+			else{
 			context.getCounter(UNIQUE.counter).increment(1);
-			double sim = JaSim(firstset, secondset);
+			sim = JaSim(firstset, secondset); }	
+			
 
 			if (sim >= 0.8) {
 				context.write(new Text( "(" + key.toString()+ ")" ), new Text(String.valueOf(sim)) );
