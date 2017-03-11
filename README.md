@@ -234,121 +234,6 @@ while ((pattern = rdr.readLine()) != null) {
 	Di.add(word[0]);
 ```
 
-Here I tried a python-type mapping method but turns out not competiable to java-hadoop mapreduce. This first try is to use two for loop functions to all the possible combination. Later use another for loop function to delete the repeated duplicates. 
-
-```
-int nu = keylist.indexOf(key);
-for(int i=0; i < nu+1; i++){decre.remove(i);}
-			
-StringBuilder stringBuilder = new StringBuilder();
-for (String numi : decre)  {if (key.toString().equals(decre)) {continue;}
-stringBuilder.append(key + "," + numi);
-String k = stringBuilder.toString();
-context.write(new Text(k.toString()), new Text(value.toString()));
-```
-This try result in a system crash that there is no output from reducer. Then I turn to find the solution on the internet. Some examples concerning Jarccord similarity use the custom set of Writable implementations that I also found it in the book  Hadoop - The Definitive Guide The Fourth Edition by Tom White. At page 121, he demonstrate the example code for an implementation that represents a pair of strings, called TextPair.
-
-Basically I took the example and revise "compareTo" function becaue the example is made to compare two strings lexicographically. "If both the strings are equal then this method returns 0 else it returns positive or negative value. The result is positive if the first string is lexicographically greater than the second string else the result would be negative", quoted from the book. The example code can be used for the scenario:
-
-```
-[ 20 ] = [ 20 ]
- this    latter
-```
-However, our current task is to match out the duplicate like-----
-```
-[ 1233, 100 ] = [ 100, 1233 ] as duplicate
-  this              late     <--- not specified enough to operate the comparison
-```
-To sum up, in this task, we have 4 integer values that we have to consider:
-* this.first
-* this.second
-* late.first
-* late.second
-
-
-the duplicate will be defined as
-```
-this.first == this.second (skipped in the if condition already)
-
-this.first == late.first  &&  this.second == late.second
-      TF            LF             TS              LS
-this.first == late.second &&  this.second == late.first
-      TF            LS               TS             LF
-```
-Which is being realized by the following code:
-```
-int TFLFcmp = this.first.compareTo(late.first); 
-int TSLScmp = this.second.compareTo(late.second); 
-int TFLScmp = this.first.compareTo(late.second); 
-int TSLFcmp = this.second.compareTo(late.first); 
-if ( (TFLFcmp == 0 && TSLScmp == 0) || (TFLScmp == 0 && TSLFcmp == 0) ){return 0;}
-```
-
-Secondly, the following requirement is to design the condition to impose. in order to make the comparison, smaller values first; only when smaller values is the same, we turn to bigger value. The method I use is to always check if the front value minus back value is negative. Then it depends on negativity or positivity, we need to flip the position. According to these two constraints, we can tell which one is smaller and how to compare. 
-
-
-
-
-```
-				int thisflip = 0;
-				int lateflip = 0;
-				int opendoor = 0;
-				int finalresult = 0;
-				
-				if (this.first.compareTo(this.second) < 0){
-					thisflip = 1;
-					}
-				if (late.first.compareTo(late.second) < 0){
-					lateflip = 1;
-					}
-				
-				// policy: compare with smaller numbers -> if equal -> compare the other number
-				// *(avoiding the explosive numbers)
-```
-The following code is to perform under the below logic:
-
-
-number representation | Scenario | Action
------------- | ------------- | -------------
-1 | t.first & l.first are smaller | both flip
-2 | t.first is smaller + l.second is smaller | this flips
-3 | t.second is smaller + l.first is smaller | later flips
-4 | t.second is smaller + l.second is smaller | no flips in both
-
-
-```
-				if ( ( thisflip == 1 ) && (lateflip == 1) ){ 
-					opendoor = 1;}
-				if ( ( thisflip == 1 ) && (lateflip == 0) ){ 
-					opendoor = 2;}
-				if ( ( thisflip == 0 ) && (lateflip == 1) ){ 
-					opendoor = 3;}
-				if ( ( thisflip == 0 ) && (lateflip == 0) ){ 
-					opendoor = 4;}
-				
-				if ( (opendoor == 1) ){ 
-					if (TFLFcmp == 0) {
-						finalresult = TSLScmp;
-					} else {
-						finalresult = TFLFcmp;
-					}
-				}
-				
-				if ( (opendoor == 2)){ 
-					if (TFLScmp == 0) {
-						finalresult = TSLFcmp;
-					} else {
-						finalresult = TFLScmp;
-					}
-				}
-				
-				if ( (opendoor == 3)){ 
-					if (TSLFcmp == 0) {
-						finalresult = TFLScmp;
-					}else {
-						finalresult = TSLFcmp;
-
-```
 First of all, I start by creating a for loop to group all Document ID with any possible combination. Upon finished, there are 2 conditions to make sure to achieve original objective, 1. if ID numbers are the same, we don't register; 2. transforming the string into integer to avoid writing the latter element in a pair is lower than the first element. For example, the pair (3,1) has been created when creates (1,3) in round (1) = Keystring. 
 
 If the key and corresponding document ID are satisfying with prosposed conditions, the system will output the pair as a Text to pass to Reducer. 
@@ -446,6 +331,32 @@ for (int r = 0; r < (int) threshold_number ; ++r ){
 	
 ```
 
+In between putting back the strings into Hashset and executing the similarity comparison, here I also implement a "if" function to tell the obvious answer. The simple logic is that if there is only one left in the HashSet, we can easily use contain function to test and return a boolean response, without involving with the comparison function. 
+
+	
+```
+double sim = 0;
+if (firstset.size() == 1){
+	String fr = Words_one[0];
+	if (secondset.contains(fr)) {
+		sim = 1;}
+	else{
+		context.getCounter(UNIQUE.counter).increment(1);
+		sim = JaSim(firstset, secondset); }
+}
+else if (secondset.size() == 1) {
+String cr = Words[0];
+	if (firstset.contains(cr)) {
+		sim = 1;}
+	else{
+		context.getCounter(UNIQUE.counter).increment(1);
+		sim = JaSim(firstset, secondset); }
+}
+else{
+	context.getCounter(UNIQUE.counter).increment(1);
+	sim = JaSim(firstset, secondset); }	
+```
+
 Finally, [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/part-r-00000) and [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/MDP022B.java)
 
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/B.png)
@@ -458,8 +369,8 @@ Explain and justify the difference between a) and b) in the number of performed 
 
 comparison | number of performed comparisons | execution time
 ------------ | ------------- | -------------
-a| 169071 | 1 mins 15 secs
-b| 169071 | 1 mins 10 secs
+a| 530878 | 10 mins 29 secs
+b| 530878 | 9 mins 35 secs
 
 
 Although having the same number of performed comparisons, I have less executation time in problem B. 
