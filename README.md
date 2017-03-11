@@ -10,7 +10,7 @@ In this assignment, you will use the document corpus of [pg100.txt](http://www.g
 * Order the tokens of each line in ascending order of global frequency.
 
 
-Note: Taking the whole complete file to run the similarity test took several hours to compile one run. In order to effectively present the result of this assignment, the document is reduced to the first 3084 lines as the input argument.
+Note: Taking the whole complete file to run the similarity test took several hours to compile one run. In order to effectively present the result of this assignment, the document is reduced to the first 1000 lines as the input argument.
 
 ***
 
