@@ -10,11 +10,13 @@ In this assignment, you will use the document corpus of [pg100.txt](http://www.g
 * Order the tokens of each line in ascending order of global frequency.
 
 
+Note: Taking the whole complete file to run the similarity test took several hours to compile one run. In order to effectively present the result of this assignment, the document is reduced to the first 3084 lines as the input argument.
+
 ***
 
 ### StopWords Utilization
 
-Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list ([WordCount Input File](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/stopWords.csv), extracting from pg100.txt) to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
+Learned from the last assignment, we have had the StopWords. For this assignment pre-prossessing part, I import the StopWords list ([StopWords Input File](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/stopWords.csv), extracting from pg100.txt) to eliminate the high frequency apparence words (>4000 times occurrence) and use pattern to filter out. 
 
 ```
 HashSet<String> stopWords = new HashSet<String>();
@@ -91,7 +93,9 @@ while(it.hasNext()){
     System.out.print(entry.getKey() + " : " + entry.getValue());
 }
 ```
-Therefore we can revise the code and turn them into the following code for storing the WordCount information, and this is [the input file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/WordCount.csv) that I use :
+Therefore we can revise the code and turn them into the following code for storing the WordCount information, and this is [the input file](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/Pre-Processing/read_input/WordCount.csv) that I use. Instead of taking all three documents together in the previous assignment, this global frequency index is * only * generated from pg100.txt, in order to match the requirement of this assignment. 
+
+
 ```
 HashMap<String, String> wordcount = new HashMap<String, String>();
 reader = new BufferedReader(new FileReader(new File("/home/cloudera/workspace/WordCount/output/WordCount.csv")));
