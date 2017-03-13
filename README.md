@@ -14,9 +14,9 @@ Note:
 
 At the first time of running this, I took the whole complete file to run the similarity test. The pre-prossessing part was okay, but as soon as I run the first comparison job, the system crashed (I ran the code overnight more than 7 hours and checked the result in the morning. The console stopped at 5% mapper). Invitably, I will have to reduce the numbers of lines considering my hardware condition is not competiable to run a big mapreduce job. Then 
 
-Secondly, I reduce the numbers of line to 10,000 lines, but it took several hours to compile just one run. It was still not ideal beceause I would not be able to do anything or modify if the job will take me several hours to run one job, and my computer got completely frozen during the run. Finally, I found the balance of not taking too less lines, but still keep the running time in reasonable time, is to have the first 1200 lines to be the input argument of this project.
+Secondly, I reduce the numbers of line to 10,000 lines, but it took several hours to compile just one run. It was still not ideal beceause I would not be able to do anything or modify if the job will take me several hours to run one job, and my computer got completely frozen during the run. Finally, I found the balance of not taking too less lines, but still keep the running time in reasonable time. I would have the first 1200 lines to be the input argument of this project.
 
-As a result, the following result is presented by this pre-condition after several catastrophic crashed during few nights. 
+As a result, the following result is presented by this pre-condition after catastrophic crashes during several nights. 
 
 ***
 
