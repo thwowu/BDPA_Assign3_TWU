@@ -315,7 +315,6 @@ if (sim >= 0.8) {context.write(new Text( "(" + key.toString()+ ")" ), new Text(S
 
 [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/part-r-00000) & [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/MDP022.java)
 
-[](Comment text goes here)
 ![result](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/A/A.png)
 
 
@@ -325,47 +324,103 @@ comparisons.
 
 ***
 
-The mapper part is completely the same as Problem 1. I choose to manipulate the inverted index at Reducer, mainly. The method is the same to extract: using the ID from key, get the text in HashMap by key. Secondly, by splitting the whole string by space, having the numbers of the words as $d$, $t$ = threshold = 0.8
+The mapper part is similar as Problem A, but the major difference coming from the more computation saving method that i put in the intermediate output of my mapper. 
+
+As you can see from the below code, I put the IDs and corpus together, following by this form: Document One ID , Document Two ID, Document One Corpus, Document Two corpus. Then in my reducer, I can simply split them by commas, and assign them into individual string for later comparison. 
+
+In this way, I save the time that wasted on reading in rawinput.cvs in every reducer, where I have the number of reducer euqal to the number of pair candidates. If I have 1000 candidate, this new method just saves me the 1000 times of read-in memory from importing rawinput.cvs 1000 times. 
+
 
 ```
-String keyone = key.getFirst().toString();  
-String keytwo = key.getSecond().toString();    	
+stringBuilder.append(Keystring + "," +line + "," + value.toString() + "," + Di.get(line));
+context.write(new Text(stringBuilder.toString()), new Text(value.toString() ) );
+```
+
+So far the intermediate output from mapper will look like as 
+```
+key: 230,901,define wind custom breathe deep going learning,The method is the same to extract
+   (1st ID ) / (2nd ID) / (1st corpus) / (2nd corpus)
+value: define wind custom breathe deep going learning
+   (we dont use this in reduce in fact)
+```
+
+
+I choose to manipulate the inverted index at Reducer, mainly. The method is the same to extract: using the ID from key, get the text in HashMap by key. Secondly, by splitting the whole string by space, having the numbers of the words as $d$, $t$ = threshold = 0.8. And them by using for loop function, to put back the words into HashSet one by one
+
+```
+String[] ke = key.toString().split(",");
+String keyone = ke[0];  
+String keytwo = ke[1];  	
+String onestrings = ke[2];
+String twostrings = ke[3];    	
 
 HashSet<String> secondset = new HashSet<String>();
-
-String twostrings = ProcessedDoc.get(keytwo);
 String[] Words = twostrings.split(" ");
 long threshold_number = Math.round(Words.length - (Words.length * 0.8) + 1);
-// https://www.tutorialspoint.com/java/number_round.htm
 for (int r = 0; r < (int) threshold_number ; ++r ){
 	secondset.add(Words[r]);}
-	
+
+HashSet<String> firstset = new HashSet<String>();
+String[] Words_one = onestrings.split(" ");
+long threshold_numberone = Math.round(Words_one.length - (Words_one.length * 0.8) + 1);
+for (int h = 0; h < (int) threshold_numberone ; ++h ){
+					 firstset.add(Words_one[h]); }
 ```
 
-In between putting back the strings into Hashset and executing the similarity comparison, here I also implement a "if" function to tell the obvious answer. The simple logic is that if there is only one left in the HashSet, we can easily use contain function to test and return a boolean response, without involving with the comparison function. 
+In between putting back the strings into Hashset and executing the similarity comparison, here I also implement a "if" function to distinguish the obvious answer. The simple logic is that if there is only one left in the HashSet, we can easily use contain function to test and return a boolean response, without involving with the comparison function. 
 
-	
+There are three steps to verify the similiary,
+
+First of all, i check if there is at least one match, if so, the integer variable will increase one by a for loop (it breaks when the intgert is larger than zero). If the for loop continues until the end, the integer will be alwasy zero without break, so that means there is NO match in both HashSet. We can simply state that the similarity is zero, or to say, there is no similarity in this pair of candidates.
+
+Secondly, i check the candidate pairs which either of them only has one word after the elimination. Because the only one word can quickly decide whether there is a match or not (simply think as there is no other possibilities but the unique one word in either HashSet). Therefore, before we actually compute the Jaccard similarity, we know already the similary is either one or zero.
+
+Thirdly, if my candidate pair has at least one match, and both of them have more than one word in each set, we start to perform Jaccard Similarity comparison (where the counter actually clicks) and pass through the 0.8 threshold filter to write out the output in HDFS. 
+
+
+At the same time, the output of reduce is edited to fit into the new method too. 
+
 ```
 double sim = 0;
-if (firstset.size() == 1){
-	String fr = Words_one[0];
-	if (secondset.contains(fr)) {
-		sim = 1;}
-	else{
-		context.getCounter(UNIQUE.counter).increment(1);
-		sim = JaSim(firstset, secondset); }
-}
-else if (secondset.size() == 1) {
-String cr = Words[0];
-	if (firstset.contains(cr)) {
-		sim = 1;}
-	else{
-		context.getCounter(UNIQUE.counter).increment(1);
-		sim = JaSim(firstset, secondset); }
-}
-else{
-	context.getCounter(UNIQUE.counter).increment(1);
-	sim = JaSim(firstset, secondset); }	
+int bobo = 0;
+			for (String hw : Words_one){
+				if (secondset.contains(hw)){ 
+				bobo = bobo + 1;}
+				if (bobo > 0){
+				break;}
+			}
+			
+			if (bobo < 1){
+				sim = 0;}
+			
+			else{
+				if ((int) threshold_numberone == 1){
+					if (secondset.contains(Words_one[0])) {
+						sim = 1;}
+					else{
+						sim = 0;}
+				}
+				else if ((int) threshold_number == 1) {
+					if (firstset.contains(Words[0])) {
+						sim = 1;}
+					else{
+						sim = 0; }
+				}
+				else{
+				context.getCounter(UNIQUE.counter).increment(1);
+				sim = JaSim(firstset, secondset); }	
+			}	
+			if (sim >= 0.8) {
+			context.write(new Text( "(" + keyone + "," + keytwo + ")" ), new Text(String.valueOf(sim)) );
+			}
+```
+
+As a reuslt, we can obtain the output to be in this form too:
+
+```
+(121,298),1.0
+(126,133),1.0
+(161,1003),1.0
 ```
 
 Finally, [the output](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/part-r-00000) and [complete code](https://github.com/thwowu/BDPA_Assign3_TWU/blob/master/B/MDP022B.java)
