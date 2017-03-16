@@ -343,10 +343,10 @@ key: 230,901,define wind custom breathe deep going learning,The method is the sa
 value: define wind custom breathe deep going learning
    (we dont use this in reduce in fact)
 
-*** Note: I try to integret two corpus to be stored in values. However, from many experiments I did, for exmaple, the value of mapper output as (1st corpus) / (2nd corpus), but it always crashes in reducer. My guess is because in reducer, the value of input argurment is iterable value. Somehow it just does not accept that I will split the value into strings. So far i could not find the specific reason to explain this fact yet. 
-
 ```
+Note: I try to integret two corpus to be stored in values. However, from many experiments I did, for exmaple, the value of mapper output as (1st corpus) / (2nd corpus), but it always crashes in reducer. My guess is because in reducer, the value of input argurment is iterable value. Somehow it just does not accept that I will split the value into strings. So far i could not find the specific reason to explain this fact yet. 
 
+***
 
 I choose to manipulate the inverted index at Reducer, mainly. The method is the same to extract: using the ID from key, get the text in HashMap by key. Secondly, by splitting the whole string by space, having the numbers of the words as $d$, $t$ = threshold = 0.8. And them by using for loop function, to put back the words into HashSet one by one
 
