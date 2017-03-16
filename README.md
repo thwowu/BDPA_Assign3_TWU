@@ -380,15 +380,15 @@ Explain and justify the difference between a) and b) in the number of performed 
 
 comparison | number of performed comparisons | execution time
 ------------ | ------------- | -------------
-a| 530878 | 10 mins 29 secs
-b| 530878 | 9 mins 35 secs
+a| 530,878 | 10 mins 29 secs
+b| 1,664 | 1 mins 41 secs
 
 
 Although having the same number of performed comparisons, I have less executation time in problem B. 
 
-In the code, the problem A and problem B have the exactly same amount of pairs candidates that ran through counter. That was why I have the same number of performed comparisons. However, the biggest difference causing the time executation is that, in problem B, the cost in computing addAll, and retainAll. These two functions take much less words to perform the jobs in problem B than in problem A, because the size of the HashSet has been reduced shorter by the equation. 
+In the code, the problem A and problem B have the very different amount of pairs candidates that ran through counter. The biggest difference causing the time executation are two reasons. First of all, comparing to the A, without the contrainst of appointing the content of mapping output, in B, I do not need to read in rawinput.csv in each reducer for mapping out the corpus. Instead, I can directly take the corpus from my reducer's key, so that my reducer only focus on checking comparison after certain if functions I define at the beggining. Seconly, in problem B, the cost in computing addAll, and retainAll. These two functions take much less words to perform the jobs in problem B than in problem A, because the size of the HashSet has been reduced shorter by the equation. 
 
-As a result, problem B has much less time wasted on Jaccard Similiarity function than the time in problem A, benefit from below equation. 
+As a result, problem B has much less time wasted on Jaccard Similiarity function than the time in problem A, benefit from below equation and the simplied corpus mapping method implemented in B. 
 ```
 |d| - [t |d|] + 1
 ```
