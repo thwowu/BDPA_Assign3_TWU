@@ -244,7 +244,7 @@ while ((pattern = rdr.readLine()) != null) {
 
 First of all, I start by creating a for loop to group all Document ID with any possible combination. Upon finished, there are 2 conditions to make sure to achieve original objective, 1. if ID numbers are the same, we don't register; 2. transforming the string into integer to avoid writing the latter element in a pair is lower than the first element. For example, the pair (3,1) has been created when creates (1,3) in round (1) = Keystring. 
 
-If the key and corresponding document ID are satisfying with prosposed conditions, the system will output the pair as a Text to pass to Reducer. 
+In the book from the CS246 "CS246 Mining Massive Data Sets", they introduce this method called "the Trianglar-Matrix Method" (page 211). It indicates that we order the pair so that $i < j$, and only use the entry a[i,j] in a two-dimensional array a. That strategy would make half the array useless. A more space-efficient way is to use a one-dimensional triangular array. In this way, we can prevent the for loop to create duplicate pairs and also commits to the assignment requirement.  If the key and corresponding document ID are satisfying with prosposed conditions, the system will output the pair as a Text to pass to Reducer. 
 
 ```
 String ID = key.toString();
