@@ -338,11 +338,13 @@ context.write(new Text(stringBuilder.toString()), new Text(value.toString() ) );
 
 So far the intermediate output from mapper will look like as 
 ```
-key: 230,901,define wind custom breathe deep going learning,The method is the same to extract
-   (1st ID ) / (2nd ID) / (1st corpus) / (2nd corpus)
-value: define wind custom breathe deep going learning
-   (we dont use this in reduce in fact)
-
+key: 
+230,901,define wind custom breathe deep going learning,The method is the same to extract
+(1st ID ) / (2nd ID) / (1st corpus) / (2nd corpus)
+   
+value: 
+define wind custom breathe deep going learning
+(we dont use this in reduce in fact)
 ```
 Note: I try to integret two corpus to be stored in values. However, from many experiments I did, for exmaple, the value of mapper output as (1st corpus) / (2nd corpus), but it always crashes in reducer. My guess is because in reducer, the value of input argurment is iterable value. Somehow it just does not accept that I will split the value into strings. So far i could not find the specific reason to explain this fact yet. 
 
